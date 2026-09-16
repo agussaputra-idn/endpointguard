@@ -1,0 +1,67 @@
+{
+  "Name": "EndpointGuard-BOLA-VirtualPatch-RuleGroup",
+  "Id": "eg-waf-bola-shield-001",
+  "Capacity": 50,
+  "Scope": "REGIONAL",
+  "Rules": [
+    {
+      "Name": "Block-CrossTenant-BOLA-Exploits",
+      "Priority": 1,
+      "Action": {
+        "Block": {
+          "CustomResponse": {
+            "ResponseCode": 403,
+            "CustomResponseBodyKey": "BOLA_BLOCKED_MESSAGE"
+          }
+        }
+      },
+      "Statement": {
+        "AndStatement": {
+          "Statements": [
+            {
+              "ByteMatchStatement": {
+                "SearchString": "/api/v1/invoices/",
+                "FieldToMatch": {
+                  "UriPath": {}
+                },
+                "TextTransformations": [
+                  {
+                    "Priority": 0,
+                    "Type": "LOWERCASE"
+                  }
+                ],
+                "PositionalConstraint": "STARTS_WITH"
+              }
+            },
+            {
+              "ByteMatchStatement": {
+                "SearchString": "GET",
+                "FieldToMatch": {
+                  "Method": {}
+                },
+                "TextTransformations": [
+                  {
+                    "Priority": 0,
+                    "Type": "NONE"
+                  }
+                ],
+                "PositionalConstraint": "EXACTLY"
+              }
+            }
+          ]
+        }
+      },
+      "VisibilityConfig": {
+        "SampledRequestsEnabled": true,
+        "CloudWatchMetricsEnabled": true,
+        "MetricName": "EndpointGuardBOLAPatch"
+      }
+    }
+  ],
+  "CustomResponseBodies": {
+    "BOLA_BLOCKED_MESSAGE": {
+      "ContentType": "APPLICATION_JSON",
+      "Content": "{\"error\": \"Access blocked by AWS WAF EndpointGuard Virtual Patch\"}"
+    }
+  }
+}

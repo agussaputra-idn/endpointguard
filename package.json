@@ -1,0 +1,17 @@
+{
+  "name": "endpointguard",
+  "version": "1.0.0",
+  "description": "EndpointGuard Platform with Autonomous Agent Engine",
+  "type": "module",
+  "scripts": {
+    "scan": "node engine/src/index.js",
+    "patch": "node engine/src/runPatchAgent.js",
+    "patch:apply": "node engine/src/runPatchAgent.js --apply",
+    "verify": "node engine/src/runVerifier.js",
+    "sentinel": "node engine/src/runSentinel.js",
+    "server": "node server.js"
+  },
+  "keywords": ["security", "api", "ai-agent", "bola"],
+  "author": "",
+  "license": "MIT"
+}

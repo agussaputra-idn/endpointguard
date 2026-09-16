@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-09-16T13:30:21.423Z",
+  "verdict": "VERIFIED_SAFE_TO_MERGE",
+  "confidenceScore": 100,
+  "summary": "All security invariants and business regression invariants passed with 100% confidence. Safe for production.",
+  "metrics": {
+    "totalTests": 4,
+    "passedTests": 4,
+    "failedTests": 0,
+    "totalDurationMs": 0
+  },
+  "invariants": {
+    "securityInvariantPassed": true,
+    "businessRegressionPassed": true
+  },
+  "testResults": [
+    {
+      "testName": "Security Invariant: Cross-tenant BOLA attack must be blocked",
+      "category": "SECURITY_INVARIANT",
+      "expectedStatus": 403,
+      "actualStatus": 403,
+      "passed": true,
+      "durationMs": 0,
+      "details": "Attacker (Bob) was successfully blocked with HTTP 403 Forbidden."
+    },
+    {
+      "testName": "Business Invariant: Legitimate owner (Alice) can access her own resource",
+      "category": "BUSINESS_REGRESSION",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 0,
+      "details": "Owner (Alice) successfully retrieved her invoice with valid data intact."
+    },
+    {
+      "testName": "Tenant Symmetry: Bob can access his own resource normally",
+      "category": "TENANT_SYMMETRY",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 0,
+      "details": "Bob successfully retrieved his own invoice without issues."
+    },
+    {
+      "testName": "Collection Integrity: Invoices list returns only tenant-scoped records",
+      "category": "COLLECTION_INTEGRITY",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "passed": true,
+      "durationMs": 0,
+      "details": "List returned 1 records, 100% strictly scoped to Alice."
+    }
+  ]
+}
