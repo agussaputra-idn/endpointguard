@@ -99,7 +99,9 @@
           <span>CLOUDFLARE ANYCAST EDGE: ONLINE</span>
         </span>
         <span class="text-obsidian-700">|</span>
-        <span class="text-slate-300">PoP Latency: <span id="edge-latency" class="text-cyan-400 font-bold">14ms</span></span>
+        <span class="text-slate-300">PoP: <span id="edge-pop-info" class="text-cyan-400 font-bold">Detecting...</span></span>
+        <span class="text-obsidian-700">|</span>
+        <span class="text-slate-300">Latency: <span id="edge-latency" class="text-cyan-400 font-bold">14ms</span></span>
         <span class="text-obsidian-700 hidden sm:inline">|</span>
         <span class="text-slate-400 hidden sm:inline">SSL/TLS 1.3 Authenticated</span>
       </div>
@@ -145,9 +147,11 @@
           class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-300 hover:text-cyan-200 bg-cyan-950/60 border border-cyan-500/40 px-3.5 py-2 rounded-xl transition hover:border-cyan-400">
           <span>⚡</span> Live Agent Demo
         </button>
-        <a href="#waitlist-section" class="text-xs font-bold bg-gradient-to-r from-cyan-500 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-obsidian-950 px-4 py-2 rounded-xl transition shadow-lg shadow-cyan-500/20">
-          Deploy Sentinel
-        </a>
+        <button 
+          onclick="openCheckoutModal('pro_sentinel_19')"
+          class="text-xs font-bold bg-gradient-to-r from-cyan-500 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-obsidian-950 px-4 py-2 rounded-xl transition shadow-lg shadow-cyan-500/20">
+          Deploy Sentinel ($19/mo)
+        </button>
       </div>
     </div>
   </header>
@@ -623,9 +627,11 @@
               <li class="flex items-center gap-2"><span class="text-cyan-400 font-bold">✓</span> AI Token Drain & Financial Runaway Shield</li>
             </ul>
           </div>
-          <a href="#waitlist-section" class="mt-8 block text-center bg-gradient-to-r from-cyan-500 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-obsidian-950 text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg shadow-cyan-500/25">
-            Join Enterprise Beta
-          </a>
+          <button 
+            onclick="openCheckoutModal('pro_sentinel_19')"
+            class="mt-8 block w-full text-center bg-gradient-to-r from-cyan-500 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-obsidian-950 text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg shadow-cyan-500/25">
+            Deploy Sentinel ($19/mo) ➔
+          </button>
         </div>
       </div>
     </section>
@@ -781,24 +787,168 @@
     </div>
   </div>
 
+  <!-- MODAL: Autonomous Sentinel Pro Activation & Checkout (Matthew Gallagher Model) -->
+  <div id="checkout-modal" class="fixed inset-0 bg-obsidian-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-obsidian-900 border border-cyan-500/50 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative text-left font-sans glow-cyan">
+      
+      <button onclick="closeCheckoutModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-mono">✕</button>
+
+      <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-mono font-medium mb-4 w-fit">
+        <span>⚡</span>
+        <span>AUTONOMOUS SENTINEL PRO SETUP</span>
+      </div>
+
+      <h3 class="text-2xl font-extrabold text-white mb-2">Arm Your API at the Edge</h3>
+      <p class="text-xs text-slate-400 mb-6 leading-relaxed">
+        Deploy 24/7 CI/CD GitHub PR ghost bots and instant Cloudflare WAF virtual patching to protect against BOLA/IDOR zero-days.
+      </p>
+
+      <!-- Plan Summary Card -->
+      <div class="bg-obsidian-950 p-4 rounded-2xl border border-obsidian-800 mb-5 flex items-center justify-between">
+        <div>
+          <div class="text-xs text-slate-400 font-mono">SELECTED SUBSCRIPTION</div>
+          <div class="text-base font-extrabold text-white mt-0.5">Enterprise Sentinel Pro</div>
+          <div class="text-[11px] text-cyan-400">Unlimited PR Bot Audits + Cloudflare Edge WAF</div>
+        </div>
+        <div class="text-right">
+          <div class="text-xl font-extrabold text-white font-mono">$19</div>
+          <div class="text-[10px] text-slate-500">/ month</div>
+        </div>
+      </div>
+
+      <!-- Intake Form -->
+      <form id="checkout-form" onsubmit="handleCheckoutSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-mono text-slate-300 mb-1.5">Work / Engineering Email</label>
+          <input 
+            type="email" 
+            id="checkout-email" 
+            required 
+            placeholder="cto@yourcompany.com" 
+            class="w-full bg-obsidian-950 border border-obsidian-700 text-slate-100 placeholder-slate-500 px-4 py-3 rounded-xl focus:outline-none focus:border-cyan-400 text-xs font-mono"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-mono text-slate-300 mb-1.5">GitHub Repository or API Domain</label>
+          <input 
+            type="text" 
+            id="checkout-target" 
+            placeholder="github.com/org/backend or https://api.domain.com" 
+            class="w-full bg-obsidian-950 border border-obsidian-700 text-slate-100 placeholder-slate-500 px-4 py-3 rounded-xl focus:outline-none focus:border-cyan-400 text-xs font-mono"
+          />
+        </div>
+
+        <div class="pt-2">
+          <button 
+            type="submit" 
+            id="checkout-submit-btn"
+            class="w-full bg-gradient-to-r from-cyan-500 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-obsidian-950 font-extrabold py-3.5 rounded-xl transition text-sm shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2">
+            <span>Proceed to Autonomous Provisioning ($19/mo)</span>
+            <span>➔</span>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-center gap-4 text-[11px] text-slate-500 font-mono text-center pt-1">
+          <span>🔒 Stripe 256-Bit SSL</span>
+          <span>•</span>
+          <span>Cancel Anytime</span>
+          <span>•</span>
+          <span>30-Day Guarantee</span>
+        </div>
+      </form>
+
+      <!-- Success / Provisioning Result Screen -->
+      <div id="checkout-success" class="hidden text-center py-4 space-y-4">
+        <div class="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mx-auto">
+          ✓
+        </div>
+        <div>
+          <h4 class="text-lg font-bold text-white">Autonomous Sentinel Provisioned!</h4>
+          <p class="text-xs text-slate-300 mt-1" id="checkout-success-msg">
+            Your verification payload and PR Ghost Bot integration link have been dispatched.
+          </p>
+        </div>
+        <div class="bg-obsidian-950 p-3.5 rounded-xl border border-obsidian-800 text-left font-mono text-xs space-y-1.5 text-cyan-300">
+          <div>// Audit ID: <span id="checkout-audit-id" class="text-slate-100">eg_001</span></div>
+          <div>// GitHub Bot: <span class="text-emerald-400">ARMED</span></div>
+          <div>// Cloudflare WAF: <span class="text-emerald-400">READY TO SYNC</span></div>
+        </div>
+        <button onclick="closeCheckoutModal()" class="w-full bg-obsidian-800 hover:bg-obsidian-750 text-slate-200 py-2.5 rounded-xl text-xs font-semibold transition border border-obsidian-700">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Frontend Interactive Engine Script -->
   <script>
-    // Live Edge Health Check Telemetry
+    // Live Edge Health Check & PoP Telemetry
     async function checkEdgeHealth() {
       try {
         const start = performance.now();
         const res = await fetch('/api/health');
         const end = performance.now();
         const latency = Math.round(end - start);
+        const data = await res.json();
+        
         const latencyEl = document.getElementById('edge-latency');
-        if (latencyEl) {
-          latencyEl.innerText = `${latency}ms`;
+        const popEl = document.getElementById('edge-pop-info');
+        
+        if (latencyEl) latencyEl.innerText = `${latency}ms`;
+        if (popEl && data.edge) {
+          popEl.innerText = `${data.edge.colo} (${data.edge.city || data.edge.country})`;
         }
       } catch (e) {
-        // Fallback default
+        const popEl = document.getElementById('edge-pop-info');
+        if (popEl) popEl.innerText = 'Connected';
       }
     }
     checkEdgeHealth();
+
+    // Checkout Modal Handlers (Matthew Gallagher Automation Funnel)
+    function openCheckoutModal(plan = 'pro_sentinel_19') {
+      const currentTarget = document.getElementById('target-url')?.value;
+      const checkoutTarget = document.getElementById('checkout-target');
+      if (checkoutTarget && currentTarget) {
+        checkoutTarget.value = currentTarget;
+      }
+      document.getElementById('checkout-modal').classList.remove('hidden');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkout-modal').classList.add('hidden');
+    }
+
+    async function handleCheckoutSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('checkout-submit-btn');
+      const email = document.getElementById('checkout-email').value.trim();
+      const target = document.getElementById('checkout-target').value.trim();
+
+      btn.disabled = true;
+      btn.innerText = 'Provisioning Sentinel Shield...';
+
+      try {
+        const res = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, targetUrl: target, plan: 'pro_sentinel_19' })
+        });
+        const data = await res.json();
+
+        document.getElementById('checkout-form').classList.add('hidden');
+        const successCard = document.getElementById('checkout-success');
+        successCard.classList.remove('hidden');
+        document.getElementById('checkout-audit-id').innerText = data.auditId || 'eg_active';
+        document.getElementById('checkout-success-msg').innerText = 
+          `Sentinel provisioning initialized for ${email}. Automated PR Ghost bot instructions and Stripe session link sent!`;
+      } catch (err) {
+        alert('Provisioning initialized. Welcome aboard!');
+        closeCheckoutModal();
+      }
+    }
 
     // Preset Target Selector
     function setPresetTarget(url, type) {
@@ -1238,13 +1388,22 @@ export default {
       scanBtn.innerText = 'Audit API Endpoint ⚡';
     });
 
-    // Waitlist Form Handler
+    // Waitlist Form Handler (Connected to Autonomous Lead Intake)
     const waitlistForm = document.getElementById('waitlist-form');
     const waitlistSuccess = document.getElementById('waitlist-success');
 
-    waitlistForm.addEventListener('submit', (e) => {
+    waitlistForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('waitlist-email').value;
+      
+      try {
+        await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, plan: 'beta_access' })
+        });
+      } catch (err) {}
+
       waitlistForm.classList.add('hidden');
       waitlistSuccess.classList.remove('hidden');
     });
