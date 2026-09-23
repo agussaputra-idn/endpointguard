@@ -406,7 +406,9 @@
               </div>
               
               <div class="flex flex-wrap items-center gap-1 bg-obsidian-900 p-1 rounded-xl border border-obsidian-800 text-[11px] font-sans">
-                <button onclick="switchFramework('express')" id="tab-express" class="px-2.5 py-1 rounded-lg font-medium bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">Express.js</button>
+                <button onclick="switchFramework('supabase')" id="tab-supabase" class="px-2.5 py-1 rounded-lg font-medium text-emerald-400 hover:text-emerald-200 border border-emerald-500/30 bg-emerald-950/40">🛡️ Supabase (RLS)</button>
+                <button onclick="switchFramework('cloudflare')" id="tab-cloudflare" class="px-2.5 py-1 rounded-lg font-medium text-cyan-300 hover:text-cyan-100 border border-cyan-500/30 bg-cyan-950/40">⚡ Cloudflare (WAF)</button>
+                <button onclick="switchFramework('express')" id="tab-express" class="px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-slate-200">Express.js</button>
                 <button onclick="switchFramework('nextjs')" id="tab-nextjs" class="px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-slate-200">Next.js Edge</button>
                 <button onclick="switchFramework('fastapi')" id="tab-fastapi" class="px-2.5 py-1 rounded-lg font-medium text-slate-400 hover:text-slate-200">Python FastAPI</button>
                 <button onclick="switchFramework('github-action')" id="tab-github-action" class="px-2.5 py-1 rounded-lg font-medium text-amber-400 hover:text-amber-200">⚙️ GitHub CI/CD</button>
@@ -1041,6 +1043,53 @@ async def get_invoice(invoice_id: str, request: Request, current_user = Depends(
         raise HTTPException(status_code=403, detail="BOLA Protection: Tenant mismatch")
     return invoice`,
 
+      supabase: `-- 🛡️ Supabase Row Level Security (RLS) Remediation Script
+-- 1. Buka Supabase Dashboard (supabase.com) -> Masuk ke Menu SQL Editor (>_)
+-- 2. Tempel kode di bawah ini lalu klik tombol "Run" (Hijau di kanan atas)
+
+-- Langkah 1: Kunci tabel publik dengan Row Level Security
+ALTER TABLE public.your_table_name ENABLE ROW LEVEL SECURITY;
+
+-- Langkah 2: Izinkan hanya user yang sudah login (Authenticated) untuk mengakses data
+CREATE POLICY "Allow authenticated access only" 
+ON public.your_table_name FOR ALL 
+TO authenticated 
+USING (true);
+
+-- (Opsional) Isolasi Data Tenant/User (Mencegah User A melihat data User B):
+-- CREATE POLICY "Tenant isolation policy" 
+-- ON public.your_table_name FOR ALL 
+-- TO authenticated 
+-- USING (auth.uid() = user_id);`,
+
+      cloudflare: `// ⚡ Cloudflare Edge & WAF Remediation Guide
+// 1. Buka Dashboard Cloudflare -> Pilih Domain Anda
+// 2. Menu: Security -> Settings -> Geser "Bot fight mode" ke posisi ON (Aktif)
+// 3. (Opsional) Pasang Cloudflare Worker Virtual Patch berikut untuk menolak request tanpa token:
+
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+
+    // Mencegat request publik tanpa autentikasi ke route API sensitif
+    if (url.pathname.startsWith('/api/orders/') || url.pathname.startsWith('/api/user/')) {
+      const authHeader = request.headers.get('Authorization') || '';
+      if (!authHeader.startsWith('Bearer ')) {
+        return new Response(
+          JSON.stringify({
+            error: 'Cloudflare Edge Shield: Unauthorized API request blocked.',
+            rule: 'OWASP-API-1-BOLA-DEFENSE',
+            blockedAt: 'Cloudflare Global Anycast Edge'
+          }),
+          { status: 401, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
+    return fetch(request);
+  }
+};`,
+
       'github-action': `# .github/workflows/endpointguard.yml
 name: EndpointGuard Automated CI/CD API Gate
 on:
@@ -1070,7 +1119,7 @@ jobs:
 
     function switchFramework(framework) {
       currentFramework = framework;
-      ['express', 'nextjs', 'fastapi', 'github-action'].forEach(f => {
+      ['supabase', 'cloudflare', 'express', 'nextjs', 'fastapi', 'github-action'].forEach(f => {
         const tab = document.getElementById(`tab-${f}`);
         if (tab) {
           if (f === framework) {
@@ -1403,6 +1452,11 @@ export default {
 
       resultsContainer.classList.remove('hidden');
       resultsContainer.scrollIntoView({ behavior: 'smooth' });
+
+      // Automatically auto-select Supabase tab if Supabase URL was audited
+      if (url.includes('supabase.co')) {
+        switchFramework('supabase');
+      }
 
       // Trigger 4-Agent Pipeline
       runAgentPipelineSimulation();
