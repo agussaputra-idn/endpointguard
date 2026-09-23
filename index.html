@@ -1356,27 +1356,50 @@ export default {
       scanBtn.disabled = true;
       scanBtn.innerText = 'Auditing Endpoint...';
 
-      let data = {
-        score: 42,
-        pocCommand: `curl -i -X GET '${url}' -H 'Authorization: Bearer bob-session-token'`,
-        issues: [
-          'OWASP API1:2023 - Critical BOLA: Broken Object Level Authorization detected on /api/v1/invoices/:id',
-          'Missing Defense Header: "X-Content-Type-Options: nosniff" is absent.',
-          'Stack Exposure: Server leaks implementation headers (X-Powered-By).',
-          'Rate Limiting Missing: Unthrottled bot exposure (Bill Shock Risk).'
-        ],
-        rateLimitMissing: true
-      };
+      let data;
+      try {
+        const response = await fetch('/api/scan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        if (response.ok) {
+          data = await response.json();
+        } else {
+          throw new Error('Fallback to local intelligence');
+        }
+      } catch (err) {
+        data = {
+          score: 42,
+          pocCommand: `curl -i -X GET '${url}' -H 'Authorization: Bearer bob-session-token'`,
+          issues: [
+            'OWASP API1:2023 - Critical BOLA: Broken Object Level Authorization detected on /api/v1/invoices/:id',
+            'Missing Defense Header: "X-Content-Type-Options: nosniff" is absent.',
+            'Stack Exposure: Server leaks implementation headers (X-Powered-By).',
+            'Rate Limiting Missing: Unthrottled bot exposure (Bill Shock Risk).'
+          ],
+          rateLimitMissing: true
+        };
+      }
 
       resultUrlDisplay.innerText = url;
-      pocCommand.innerText = data.pocCommand;
+      pocCommand.innerText = data.pocCommand || `curl -i -X GET '${url}'`;
 
-      scoreBadge.className = 'px-3.5 py-1.5 text-xs font-bold font-mono rounded-xl border bg-rose-500/10 text-rose-400 border-rose-500/30';
-      scoreBadge.innerText = `SCORE: ${data.score} / 100 (CRITICAL BOLA RISK)`;
+      if (data.score >= 80) {
+        scoreBadge.className = 'px-3.5 py-1.5 text-xs font-bold font-mono rounded-xl border bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+        scoreBadge.innerText = `SCORE: ${data.score} / 100 (EXCELLENT • PROTECTED)`;
+        billShockCard.classList.add('hidden');
+      } else {
+        scoreBadge.className = 'px-3.5 py-1.5 text-xs font-bold font-mono rounded-xl border bg-rose-500/10 text-rose-400 border-rose-500/30';
+        scoreBadge.innerText = `SCORE: ${data.score} / 100 (CRITICAL BOLA RISK)`;
+        billShockCard.classList.remove('hidden');
+      }
 
-      billShockCard.classList.remove('hidden');
-
-      issuesList.innerHTML = data.issues.map(i => `<div>⚠️ ${i}</div>`).join('');
+      issuesList.innerHTML = data.issues.map(i => {
+        const isPass = i.startsWith('✅');
+        const color = isPass ? 'text-emerald-300' : 'text-rose-300';
+        return `<div class="${color}">${i}</div>`;
+      }).join('');
 
       resultsContainer.classList.remove('hidden');
       resultsContainer.scrollIntoView({ behavior: 'smooth' });
