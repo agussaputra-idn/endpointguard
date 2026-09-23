@@ -1485,6 +1485,215 @@ export default {
       waitlistForm.classList.add('hidden');
       waitlistSuccess.classList.remove('hidden');
     });
+
+    // --- FLOATING CS CHATBOT ENGINE (Gemini + Antigravity via n8n) ---
+    let chatSessionId = 'cs_' + Math.random().toString(36).substring(2, 9);
+    let isProChatMode = false;
+
+    function toggleChatWidget() {
+      const chatWin = document.getElementById('chat-window');
+      const toggleBtn = document.getElementById('chat-toggle-btn');
+      if (chatWin.classList.contains('hidden')) {
+        chatWin.classList.remove('hidden');
+        toggleBtn.classList.add('hidden');
+        document.getElementById('chat-input').focus();
+      } else {
+        chatWin.classList.add('hidden');
+        toggleBtn.classList.remove('hidden');
+      }
+    }
+
+    function toggleChatTier() {
+      isProChatMode = !isProChatMode;
+      const tierBadge = document.getElementById('chat-tier-badge');
+      if (isProChatMode) {
+        tierBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 cursor-pointer';
+        tierBadge.innerText = '⚡ Pro Sentinel Active (Antigravity)';
+        appendChatMessage('bot', '⚡ **Pro Sentinel Tier Activated!** You are now connected to the **Antigravity Deep Security Architect** engine. You can ask for deep AST code analysis, custom Cloudflare WAF virtual patches, or tenant boundary audits.');
+      } else {
+        tierBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30 cursor-pointer';
+        tierBadge.innerText = '🤖 Free Copilot (Gemini)';
+      }
+    }
+
+    function sendQuickChat(promptText) {
+      document.getElementById('chat-input').value = promptText;
+      handleSendMessage();
+    }
+
+    function appendChatMessage(sender, text) {
+      const container = document.getElementById('chat-messages');
+      const msgDiv = document.createElement('div');
+      
+      if (sender === 'user') {
+        msgDiv.className = 'flex justify-end';
+        msgDiv.innerHTML = `
+          <div class="bg-cyan-500 text-obsidian-950 font-medium text-xs px-3.5 py-2.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-md">
+            ${escapeHtml(text)}
+          </div>
+        `;
+      } else {
+        msgDiv.className = 'flex justify-start gap-2';
+        // Simple markdown formatting for bold and code
+        let formatted = escapeHtml(text)
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/`([^`]+)`/g, '<code class="bg-obsidian-950 text-cyan-300 px-1 py-0.5 rounded text-[11px] font-mono">$1</code>')
+          .replace(/```([\s\S]*?)```/g, '<pre class="bg-obsidian-950 p-2.5 rounded-lg border border-obsidian-800 text-[11px] font-mono text-cyan-300 my-1.5 overflow-x-auto">$1</pre>')
+          .replace(/\n/g, '<br>');
+
+        msgDiv.innerHTML = `
+          <div class="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">🛡️</div>
+          <div class="bg-obsidian-950/90 border border-obsidian-800 text-slate-200 text-xs px-3.5 py-2.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-md leading-relaxed">
+            ${formatted}
+          </div>
+        `;
+      }
+      
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHtml(string) {
+      const pre = document.createElement('pre');
+      const text = document.createTextNode(string);
+      pre.appendChild(text);
+      return pre.innerHTML;
+    }
+
+    async function handleSendMessage() {
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendChatMessage('user', message);
+      input.value = '';
+
+      const typingInd = document.getElementById('chat-typing');
+      typingInd.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message,
+            sessionId: chatSessionId,
+            isPro: isProChatMode
+          })
+        });
+
+        const data = await res.json();
+        typingInd.classList.add('hidden');
+        appendChatMessage('bot', data.reply || 'I am currently analyzing your request.');
+      } catch (err) {
+        typingInd.classList.add('hidden');
+        appendChatMessage('bot', 'Hello! I am EndpointGuard Security Copilot. I can help explain BOLA/IDOR, guide you through Supabase RLS, and walk you through our $19/mo Pro Sentinel automated GitHub bot.');
+      }
+    }
   </script>
+
+  <!-- FLOATING CYBER CS CHATBOT WIDGET -->
+  <div id="chat-widget-root" class="fixed bottom-6 right-6 z-50 font-sans">
+    
+    <!-- Floating Trigger Pill -->
+    <button 
+      id="chat-toggle-btn"
+      onclick="toggleChatWidget()"
+      class="flex items-center gap-2.5 bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-obsidian-950 font-extrabold px-4 py-3 rounded-full shadow-2xl shadow-cyan-500/30 transition-all transform hover:scale-105 group border border-cyan-300/40">
+      <span class="relative flex h-2.5 w-2.5">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-obsidian-950 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-obsidian-950"></span>
+      </span>
+      <span class="text-xs tracking-tight">🛡️ AI Security Copilot</span>
+    </button>
+
+    <!-- Floating Chat Window (Glassmorphic Cyber Shield) -->
+    <div 
+      id="chat-window"
+      class="hidden fixed bottom-6 right-6 w-96 max-w-[calc(100vw-2rem)] h-[540px] max-h-[85vh] bg-obsidian-900/95 border border-cyan-500/40 rounded-3xl shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden z-50 glow-cyan">
+      
+      <!-- Chat Header -->
+      <div class="bg-obsidian-950 px-4 py-3 border-b border-obsidian-800 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 p-[1px] flex items-center justify-center">
+            <div class="w-full h-full bg-obsidian-950 rounded-[11px] flex items-center justify-center text-sm">
+              🛡️
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h4 class="text-xs font-extrabold text-white">EndpointGuard Copilot</h4>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            </div>
+            <p class="text-[10px] text-slate-400 font-mono">Autonomous Cyber Assistant</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- Clickable Tier Badge for Testing -->
+          <span 
+            id="chat-tier-badge"
+            onclick="toggleChatTier()"
+            title="Click to toggle between Gemini Free mode and Antigravity Pro mode"
+            class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30 cursor-pointer">
+            🤖 Free (Gemini)
+          </span>
+          <button onclick="toggleChatWidget()" class="text-slate-400 hover:text-white text-base font-mono p-1">✕</button>
+        </div>
+      </div>
+
+      <!-- Quick Prompt Suggestions Row -->
+      <div class="bg-obsidian-950/70 border-b border-obsidian-800/80 px-3 py-2 flex items-center gap-1.5 overflow-x-auto text-[11px] font-sans no-scrollbar">
+        <button onclick="sendQuickChat('What is BOLA / IDOR?')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-obsidian-850 hover:bg-obsidian-800 text-cyan-300 border border-obsidian-700 transition">
+          🎯 What is BOLA?
+        </button>
+        <button onclick="sendQuickChat('How to fix Supabase RLS?')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-obsidian-850 hover:bg-obsidian-800 text-emerald-300 border border-obsidian-700 transition">
+          🛡️ Supabase RLS
+        </button>
+        <button onclick="sendQuickChat('What is in the $19 Pro plan?')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-obsidian-850 hover:bg-obsidian-800 text-amber-300 border border-obsidian-700 transition">
+          💸 $19 Pro Plan
+        </button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3.5 bg-obsidian-900/60 font-sans">
+        <!-- Initial Welcome Message -->
+        <div class="flex justify-start gap-2">
+          <div class="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">🛡️</div>
+          <div class="bg-obsidian-950/90 border border-obsidian-800 text-slate-200 text-xs px-3.5 py-2.5 rounded-2xl rounded-tl-sm max-w-[85%] shadow-md leading-relaxed">
+            Welcome to <strong>EndpointGuard</strong>! I am your AI Security Copilot. Ask me anything about API vulnerabilities, OWASP Top 10, Supabase RLS, or how our <strong>$19 Pro Sentinel</strong> automates your GitHub PR fixes 24/7.
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="chat-typing" class="px-4 py-1.5 text-[10px] font-mono text-cyan-400 flex items-center gap-1.5 hidden bg-obsidian-950/40">
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" style="animation-delay: 0.2s"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" style="animation-delay: 0.4s"></span>
+        <span>AI Copilot is analyzing...</span>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="p-3 bg-obsidian-950 border-t border-obsidian-800">
+        <form onsubmit="event.preventDefault(); handleSendMessage();" class="flex items-center gap-2">
+          <input 
+            type="text" 
+            id="chat-input"
+            autocomplete="off"
+            placeholder="Ask about API security, RLS, $19 plan..." 
+            class="flex-1 bg-obsidian-900 border border-obsidian-700 text-slate-100 placeholder-slate-500 px-3.5 py-2.5 rounded-xl focus:outline-none focus:border-cyan-400 text-xs font-sans"
+          />
+          <button 
+            type="submit" 
+            class="bg-gradient-to-r from-cyan-500 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-obsidian-950 font-bold p-2.5 rounded-xl transition shadow-md shadow-cyan-500/20 flex-shrink-0 text-xs">
+            ➤
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
 </body>
 </html>

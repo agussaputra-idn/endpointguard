@@ -185,7 +185,110 @@ export default {
       }
     }
 
-    // 4. Serve static assets (index.html, etc.) via Cloudflare Assets binding
+    // 4. Intelligent Cyber CS Chatbot Copilot (Gemini / Antigravity via n8n)
+    if (url.pathname === '/api/chat' && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        const userMsg = (body.message || '').trim();
+        const sessionId = body.sessionId || 'anon_session';
+        const isPro = !!body.isPro;
+
+        if (!userMsg) {
+          return new Response(JSON.stringify({ error: 'Message cannot be empty' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+          });
+        }
+
+        // If N8N Webhook is configured in Cloudflare environment variables, forward directly!
+        if (env.N8N_WEBHOOK_URL) {
+          try {
+            const n8nRes = await fetch(env.N8N_WEBHOOK_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                message: userMsg,
+                sessionId,
+                isPro,
+                timestamp: new Date().toISOString()
+              })
+            });
+            if (n8nRes.ok) {
+              const n8nData = await n8nRes.json();
+              return new Response(JSON.stringify(n8nData), {
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+              });
+            }
+          } catch (n8nErr) {
+            console.error('n8n webhook forward error:', n8nErr);
+          }
+        }
+
+        // Built-in Camouflaged Copilot Engine (Collaborative Gemini / Antigravity Persona)
+        const q = userMsg.toLowerCase();
+        let reply = '';
+        let engine = isPro ? 'Antigravity Deep Engine' : 'Gemini Security Copilot';
+
+        if (q.includes('19') || q.includes('pro') || q.includes('plan') || q.includes('harga') || q.includes('price') || q.includes('bayar') || q.includes('benefit')) {
+          reply = `🛡️ **What you get with Enterprise Sentinel Pro ($19/mo):**\n\n` +
+                  `Unlike our free manual scanner, the **$19/month Pro tier** is an autonomous 24/7 background system designed to save your engineering team **2 to 4 hours of manual remediation** per vulnerability:\n\n` +
+                  `1. **Automated GitHub PR Bot:** When BOLA/IDOR is detected, EndpointGuard creates a branch in your repository with ready-to-merge AST code patches and regression invariants.\n` +
+                  `2. **Instant Cloudflare Edge WAF Sync:** Automatically injects Virtual Patches to block zero-day exploits in over 300+ global edge locations before code deploys.\n` +
+                  `3. **24/7 CI/CD Audit Gate:** Protects every pull request and staging deployment automatically.\n` +
+                  `4. **30-Day Money-Back Guarantee:** If it doesn't save your engineering team time, get a 100% refund without questions.\n\n` +
+                  `👉 Click **"Deploy Sentinel ($19/mo)"** in the top navigation bar to activate!`;
+        } else if (q.includes('supabase') || q.includes('rls')) {
+          reply = `🛡️ **Supabase Security Best Practice:**\n\n` +
+                  `To protect your Supabase database from unauthorized public scraping:\n\n` +
+                  `1. Open **Supabase Dashboard** ➔ **SQL Editor** (\`>_\`)\n` +
+                  `2. Execute:\n` +
+                  `\`\`\`sql\nALTER TABLE public.your_table ENABLE ROW LEVEL SECURITY;\n` +
+                  `CREATE POLICY "Allow authenticated only" ON public.your_table FOR ALL TO authenticated USING (true);\n\`\`\`\n` +
+                  `3. Click **Run**. This ensures anonymous visitors without login tokens cannot harvest your data!\n\n` +
+                  `Need our AI to automate your GitHub PRs and Cloudflare WAF rules 24/7? Check out our **$19/mo Pro Sentinel**!`;
+        } else if (q.includes('bola') || q.includes('idor')) {
+          reply = `🎯 **What is BOLA / IDOR (OWASP API1:2023)?**\n\n` +
+                  `**BOLA (Broken Object Level Authorization)** happens when an endpoint accepts a resource ID (e.g. \`/api/orders/101\`) without validating whether the authenticated user actually owns that resource.\n\n` +
+                  `An attacker can simply iterate through \`/orders/102\`, \`/orders/103\` to view other users' private data.\n\n` +
+                  `**EndpointGuard's Red Team Agent** probes this using dual-persona identities (Alice vs Bob) to mathematically prove the vulnerability!`;
+        } else if (q.includes('cloudflare') || q.includes('waf') || q.includes('bot')) {
+          reply = `⚡ **Cloudflare Edge Defense:**\n\n` +
+                  `Cloudflare stops malicious bot bombardment before it hits your database.\n\n` +
+                  `1. Open Cloudflare Dashboard ➔ **Security** ➔ **Settings**\n` +
+                  `2. Turn **Bot Fight Mode** to **ON**\n\n` +
+                  `With our **$19/mo Pro Sentinel**, EndpointGuard automatically syncs Edge Virtual Patches directly to your Cloudflare account to drop zero-day exploits in under 15ms!`;
+        } else if (isPro) {
+          reply = `⚡ **[Antigravity Deep Security Architect]**\n\n` +
+                  `Pro Sentinel tier active. I am ready to perform deep AST code analysis, evaluate complex tenant authorization matrices, or generate tailored Cloudflare Worker WAF virtual patches.\n\n` +
+                  `Please paste your controller function or endpoint schema to begin.`;
+        } else {
+          reply = `Hello! I am **EndpointGuard Security Copilot** 🛡️.\n\n` +
+                  `I can assist you with:\n` +
+                  `• Understanding **BOLA / IDOR** and OWASP API Top 10 vulnerabilities.\n` +
+                  `• Hardening **Supabase Row Level Security (RLS)** & Cloudflare WAF.\n` +
+                  `• How our **Autonomous 4-Agent Pipeline** works.\n\n` +
+                  `How can I help protect your API today?`;
+        }
+
+        return new Response(JSON.stringify({
+          success: true,
+          reply,
+          engine,
+          sessionId,
+          timestamp: new Date().toISOString()
+        }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // 5. Serve static assets (index.html, etc.) via Cloudflare Assets binding
     if (env.ASSETS) {
       return env.ASSETS.fetch(request);
     }
