@@ -1044,34 +1044,34 @@ async def get_invoice(invoice_id: str, request: Request, current_user = Depends(
     return invoice`,
 
       supabase: `-- 🛡️ Supabase Row Level Security (RLS) Remediation Script
--- 1. Buka Supabase Dashboard (supabase.com) -> Masuk ke Menu SQL Editor (>_)
--- 2. Tempel kode di bawah ini lalu klik tombol "Run" (Hijau di kanan atas)
+-- 1. Open your Supabase Dashboard (supabase.com) -> Navigate to SQL Editor (>_)
+-- 2. Paste the SQL query below and click "Run" (Green button at top right)
 
--- Langkah 1: Kunci tabel publik dengan Row Level Security
+-- Step 1: Enforce Row Level Security (RLS) on your target table
 ALTER TABLE public.your_table_name ENABLE ROW LEVEL SECURITY;
 
--- Langkah 2: Izinkan hanya user yang sudah login (Authenticated) untuk mengakses data
+-- Step 2: Restrict data access to authenticated users only
 CREATE POLICY "Allow authenticated access only" 
 ON public.your_table_name FOR ALL 
 TO authenticated 
 USING (true);
 
--- (Opsional) Isolasi Data Tenant/User (Mencegah User A melihat data User B):
+-- (Optional) Tenant / User Data Isolation (Prevents BOLA/IDOR cross-user snooping):
 -- CREATE POLICY "Tenant isolation policy" 
 -- ON public.your_table_name FOR ALL 
 -- TO authenticated 
 -- USING (auth.uid() = user_id);`,
 
       cloudflare: `// ⚡ Cloudflare Edge & WAF Remediation Guide
-// 1. Buka Dashboard Cloudflare -> Pilih Domain Anda
-// 2. Menu: Security -> Settings -> Geser "Bot fight mode" ke posisi ON (Aktif)
-// 3. (Opsional) Pasang Cloudflare Worker Virtual Patch berikut untuk menolak request tanpa token:
+// 1. Open Cloudflare Dashboard -> Select your Domain
+// 2. Navigate to: Security -> Settings -> Toggle "Bot Fight Mode" to ON
+// 3. (Optional) Deploy this Cloudflare Worker Virtual Patch to block unauthenticated requests at the Edge:
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Mencegat request publik tanpa autentikasi ke route API sensitif
+    // Intercept unauthenticated public requests to sensitive API endpoints
     if (url.pathname.startsWith('/api/orders/') || url.pathname.startsWith('/api/user/')) {
       const authHeader = request.headers.get('Authorization') || '';
       if (!authHeader.startsWith('Bearer ')) {
@@ -1086,6 +1086,7 @@ export default {
       }
     }
 
+    // Forward legitimate requests to origin server
     return fetch(request);
   }
 };`,
