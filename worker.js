@@ -215,7 +215,14 @@ export default {
             });
             if (n8nRes.ok) {
               const n8nData = await n8nRes.json();
-              return new Response(JSON.stringify(n8nData), {
+              const reply = n8nData.reply || n8nData.text || n8nData.output || (typeof n8nData === 'string' ? n8nData : '');
+              return new Response(JSON.stringify({
+                success: true,
+                reply: reply,
+                engine: n8nData.engine || (isPro ? 'Antigravity Deep Engine' : 'Gemini Security Copilot'),
+                sessionId,
+                timestamp: new Date().toISOString()
+              }), {
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
               });
             }
