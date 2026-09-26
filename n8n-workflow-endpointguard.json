@@ -93,7 +93,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"reply\": $json.candidates[0].content.parts[0].text || \"Analyzing API security request...\",\n  \"engine\": $('Check Pro Tier (IF)').item.json.body.isPro ? 'EndpointGuard Pro Sentinel Engine' : 'EndpointGuard Security Copilot',\n  \"sessionId\": $('Webhook (EndpointGuard Chat)').item.json.body.sessionId,\n  \"timestamp\": new Date().toISOString()\n}",
+        "responseBody": "={{ JSON.stringify({\n  success: true,\n  reply: $json.candidates[0].content.parts[0].text || \"Analyzing API security request...\",\n  engine: $('Check Pro Tier (IF)').item.json.body.isPro ? 'EndpointGuard Pro Sentinel Engine' : 'EndpointGuard Security Copilot',\n  sessionId: $('Webhook (EndpointGuard Chat)').item.json.body.sessionId,\n  timestamp: new Date().toISOString()\n}) }}",
         "options": {}
       },
       "id": "7a6f1746-8f9a-0b1c-5d2e-3f4a5b6c7d8e",
