@@ -244,7 +244,7 @@ export default {
             });
             if (n8nRes.ok) {
               const n8nData = await n8nRes.json();
-              const reply = n8nData.reply || n8nData.text || n8nData.output || (typeof n8nData === 'string' ? n8nData : '');
+              const reply = n8nData.reply || n8nData.text || n8nData.output || n8nData.candidates?.[0]?.content?.parts?.[0]?.text || (typeof n8nData === 'string' ? n8nData : '');
               return new Response(JSON.stringify({
                 success: true,
                 reply: reply,
