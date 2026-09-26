@@ -344,7 +344,101 @@ export default {
       }
     }
 
-    // 4. Intelligent Cyber CS Chatbot Copilot (EndpointGuard AI Engine via n8n)
+    // 4. Tri-Brain AI Consensus Engine Simulation (OpenAI o1 + Claude 3.5 + Gemini Edge)
+    if (url.pathname === '/api/simulate-consensus' && request.method === 'POST') {
+      try {
+        const body = await request.json().catch(() => ({}));
+        const scenario = body.scenario || 'bola';
+
+        const scenariosMap = {
+          bola: {
+            title: 'Cross-Tenant BOLA / IDOR Attack on /api/v1/accounts/{accountId}/balance',
+            redExploit: 'Red Team Hunter executed dual-persona traversal (User Alice queried Bob’s accountId: ACC-99214). Zero tenant verification detected in route params.',
+            bluePatch: 'AST Code Surgeon transformed SQL query AST: injected mandatory tenancy predicate `AND tenant_id = req.user.tenant_id`.',
+            qaVerification: 'QA Invariant Verifier validated 1,500 synthetic test permutations. 0 broken business flows, 100% IDOR blockage.',
+            patchDiff: '+ if (req.user.tenantId !== account.tenantId) throw new ForbiddenError("Cross-tenant access denied");',
+            wafRule: 'waf.blockIf(req.path.startsWith("/api/v1/accounts/") && !jwt.matchesClaim("tenant_id", req.params.accountId))'
+          },
+          race_condition: {
+            title: 'High-Concurrency Double-Spend Race Condition on /api/v1/transfers/wire',
+            redExploit: 'Red Team Hunter blasted 80 parallel asynchronous payout requests within a 3ms time window, causing dirty ledger read and balance duplication.',
+            bluePatch: 'AST Code Surgeon wrapped ledger mutation inside pessimistic row-level lock (`SELECT ... FOR UPDATE`) with Redis atomic token bucket.',
+            qaVerification: 'Stress-test twin simulated 500 concurrent threads. Exactly 1 transaction executed, 499 rejected with 429 Too Many Requests.',
+            patchDiff: '+ await db.query("SELECT balance FROM wallets WHERE id = $1 FOR UPDATE", [walletId]);',
+            wafRule: 'waf.rateLimit({ key: req.user.id, limit: 1, windowMs: 2000, action: "BLOCK" })'
+          },
+          desync: {
+            title: 'Cryptographic JWT Session Desynchronization & Privilege Escalation',
+            redExploit: 'Red Team Hunter manipulated algorithm confusion (`none` / RS256 spoofing) in `/api/v1/admin/tenants/{id}`, escalating privileges to Global SuperAdmin.',
+            bluePatch: 'AST Code Surgeon enforced strict cryptographic verification with Web Crypto subtle API, rejecting unsigned and unverified public keys.',
+            qaVerification: 'Cryptographic test suite verified 200 malformed token variations. All rogue signatures blocked before route handler invocation.',
+            patchDiff: '+ const verified = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", publicKey, signature, data);',
+            wafRule: 'waf.enforceJwtSignature({ algorithm: "RS256", jwksUri: "https://auth.internal/keys.json" })'
+          }
+        };
+
+        const activeScenario = scenariosMap[scenario] || scenariosMap.bola;
+        const timestamp = new Date().toISOString();
+        const signatureHash = '0x' + Array.from(crypto.getRandomValues(new Uint8Array(20)))
+          .map(b => b.toString(16).padStart(2, '0')).join('');
+
+        return new Response(JSON.stringify({
+          success: true,
+          protocol: 'BFT-Byzantine Fault-Tolerant AI Consensus (Threshold: 2/3)',
+          targetScenario: activeScenario.title,
+          consensusStatus: 'UNANIMOUS_CONSENSUS_REACHED',
+          quorum: '3 / 3 Brains Approved',
+          signature: `${signatureHash} [ECDSA-SHA256 Signed]`,
+          latencyMs: 16,
+          brains: [
+            {
+              id: 'BRAIN-01',
+              name: 'Neural Reasoning Core (Deep Logic Engine)',
+              architecture: 'Deep Chain-of-Thought (o1 / o3 Class)',
+              role: 'Red Team Threat Modeler',
+              vote: 'VULNERABILITY_CONFIRMED',
+              confidence: '99.8%',
+              analysis: activeScenario.redExploit,
+              statusColor: 'rose'
+            },
+            {
+              id: 'BRAIN-02',
+              name: 'Deterministic AST Code Surgeon',
+              architecture: 'High-Precision Code Synthesis (Claude 3.5 Class)',
+              role: 'Blue Team Lead Architect',
+              vote: 'AST_PATCH_SYNTHESIZED',
+              confidence: '100.0%',
+              analysis: activeScenario.bluePatch,
+              patchSnippet: activeScenario.patchDiff,
+              statusColor: 'cyan'
+            },
+            {
+              id: 'BRAIN-03',
+              name: 'Edge Sentinel & Invariant Verifier',
+              architecture: 'Ultra-Fast Telemetry (Gemini Pro Edge Class)',
+              role: 'QA Verifier & WAF Dispatcher',
+              vote: 'INVARIANTS_CERTIFIED',
+              confidence: '99.9%',
+              analysis: activeScenario.qaVerification,
+              wafRule: activeScenario.wafRule,
+              statusColor: 'emerald'
+            }
+          ],
+          failoverGuaranteed: 'Active 2-of-3 BFT Quorum. If any single provider is offline, the remaining 2 brains maintain 99.999% autonomous self-healing without disruption.',
+          deployedToEdge: true,
+          timestamp
+        }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // 5. Intelligent Cyber CS Chatbot Copilot (EndpointGuard AI Engine via n8n)
     if (url.pathname === '/api/chat' && request.method === 'POST') {
       try {
         const body = await request.json();
