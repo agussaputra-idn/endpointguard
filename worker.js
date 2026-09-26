@@ -13,6 +13,35 @@ export default {
       });
     }
 
+    // Serve Proprietary Shield Favicon & Logo SVG
+    if (url.pathname === '/endpointguard-shield.svg' || url.pathname === '/favicon.ico') {
+      const shieldSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <linearGradient id="innerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329" />
+      <stop offset="100%" stop-color="#06090e" />
+    </linearGradient>
+  </defs>
+  <path d="M50 8 L85 24 C85 60 50 92 50 92 C50 92 15 60 15 24 Z" fill="url(#shieldGrad)" />
+  <path d="M50 14 L79 28 C79 58 50 84 50 84 C50 84 21 58 21 28 Z" fill="url(#innerGrad)" />
+  <path d="M50 25 L65 35 V52 L50 62 L35 52 V35 Z" fill="none" stroke="url(#shieldGrad)" stroke-width="3" stroke-linejoin="round" />
+  <circle cx="50" cy="43.5" r="4" fill="#22d3ee" />
+  <line x1="50" y1="25" x2="50" y2="39" stroke="#22d3ee" stroke-width="2.5" />
+  <line x1="50" y1="48" x2="50" y2="62" stroke="#10b981" stroke-width="2.5" />
+</svg>`;
+      return new Response(shieldSvg, {
+        headers: {
+          'Content-Type': 'image/svg+xml',
+          'Cache-Control': 'public, max-age=86400',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+    }
+
     // 1. EndpointGuard Edge API / Health & Telemetry Check
     if (url.pathname === '/api/health') {
       const cf = request.cf || {};
