@@ -229,10 +229,11 @@ export default {
           });
         }
 
-        // If N8N Webhook is configured in Cloudflare environment variables, forward directly!
-        if (env.N8N_WEBHOOK_URL) {
+        // Forward directly to dedicated n8n AI engine
+        const n8nUrl = env.N8N_WEBHOOK_URL || 'https://n8n.endpointguard.dev/webhook/endpointguard-chat';
+        if (n8nUrl) {
           try {
-            const n8nRes = await fetch(env.N8N_WEBHOOK_URL, {
+            const n8nRes = await fetch(n8nUrl, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
