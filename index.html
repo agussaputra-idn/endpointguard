@@ -1486,7 +1486,7 @@ export default {
       waitlistSuccess.classList.remove('hidden');
     });
 
-    // --- FLOATING CS CHATBOT ENGINE (Gemini + Antigravity via n8n) ---
+    // --- FLOATING CS CHATBOT ENGINE (EndpointGuard Autonomous AI via n8n) ---
     let chatSessionId = 'cs_' + Math.random().toString(36).substring(2, 9);
     let isProChatMode = false;
 
@@ -1508,11 +1508,11 @@ export default {
       const tierBadge = document.getElementById('chat-tier-badge');
       if (isProChatMode) {
         tierBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 cursor-pointer';
-        tierBadge.innerText = '⚡ Pro Sentinel Active (Antigravity)';
-        appendChatMessage('bot', '⚡ **Pro Sentinel Tier Activated!** You are now connected to the **Antigravity Deep Security Architect** engine. You can ask for deep AST code analysis, custom Cloudflare WAF virtual patches, or tenant boundary audits.');
+        tierBadge.innerText = '⚡ Pro Sentinel Active';
+        appendChatMessage('bot', '⚡ **Pro Sentinel Tier Activated!** You are now connected to the **EndpointGuard Deep Security Architect** engine. You can ask for deep AST code analysis, custom Cloudflare WAF virtual patches, or tenant boundary audits.');
       } else {
         tierBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30 cursor-pointer';
-        tierBadge.innerText = '🤖 Free Copilot (Gemini)';
+        tierBadge.innerText = '🤖 Free Security Copilot';
       }
     }
 
@@ -1634,9 +1634,9 @@ export default {
           <span 
             id="chat-tier-badge"
             onclick="toggleChatTier()"
-            title="Click to toggle between Gemini Free mode and Antigravity Pro mode"
+            title="Click to toggle between Free Copilot and Pro Sentinel mode"
             class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30 cursor-pointer">
-            🤖 Free (Gemini)
+            🤖 Free Security Copilot
           </span>
           <button onclick="toggleChatWidget()" class="text-slate-400 hover:text-white text-base font-mono p-1">✕</button>
         </div>

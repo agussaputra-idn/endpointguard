@@ -185,7 +185,7 @@ export default {
       }
     }
 
-    // 4. Intelligent Cyber CS Chatbot Copilot (Gemini / Antigravity via n8n)
+    // 4. Intelligent Cyber CS Chatbot Copilot (EndpointGuard AI Engine via n8n)
     if (url.pathname === '/api/chat' && request.method === 'POST') {
       try {
         const body = await request.json();
@@ -219,7 +219,7 @@ export default {
               return new Response(JSON.stringify({
                 success: true,
                 reply: reply,
-                engine: n8nData.engine || (isPro ? 'Antigravity Deep Engine' : 'Gemini Security Copilot'),
+                engine: n8nData.engine || (isPro ? 'EndpointGuard Pro Sentinel Engine' : 'EndpointGuard Security Copilot'),
                 sessionId,
                 timestamp: new Date().toISOString()
               }), {
@@ -231,10 +231,10 @@ export default {
           }
         }
 
-        // Built-in Camouflaged Copilot Engine (Collaborative Gemini / Antigravity Persona)
+        // Built-in Camouflaged Copilot Engine (EndpointGuard Proprietary Persona)
         const q = userMsg.toLowerCase();
         let reply = '';
-        let engine = isPro ? 'Antigravity Deep Engine' : 'Gemini Security Copilot';
+        let engine = isPro ? 'EndpointGuard Pro Sentinel Engine' : 'EndpointGuard Security Copilot';
 
         if (q.includes('19') || q.includes('pro') || q.includes('plan') || q.includes('harga') || q.includes('price') || q.includes('bayar') || q.includes('benefit')) {
           reply = `🛡️ **What you get with Enterprise Sentinel Pro ($19/mo):**\n\n` +
@@ -265,7 +265,7 @@ export default {
                   `2. Turn **Bot Fight Mode** to **ON**\n\n` +
                   `With our **$19/mo Pro Sentinel**, EndpointGuard automatically syncs Edge Virtual Patches directly to your Cloudflare account to drop zero-day exploits in under 15ms!`;
         } else if (isPro) {
-          reply = `⚡ **[Antigravity Deep Security Architect]**\n\n` +
+          reply = `⚡ **[EndpointGuard Pro Security Architect]**\n\n` +
                   `Pro Sentinel tier active. I am ready to perform deep AST code analysis, evaluate complex tenant authorization matrices, or generate tailored Cloudflare Worker WAF virtual patches.\n\n` +
                   `Please paste your controller function or endpoint schema to begin.`;
         } else {
