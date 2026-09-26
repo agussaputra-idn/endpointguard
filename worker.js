@@ -229,8 +229,8 @@ export default {
           });
         }
 
-        // Forward directly to dedicated n8n AI engine
-        const n8nUrl = env.N8N_WEBHOOK_URL || 'https://n8n.endpointguard.dev/webhook/endpointguard-chat';
+        // Forward directly to dedicated n8n AI engine (direct origin)
+        const n8nUrl = env.N8N_WEBHOOK_URL || 'http://103.217.145.148:5678/webhook/endpointguard-chat';
         if (n8nUrl) {
           try {
             const n8nRes = await fetch(n8nUrl, {
