@@ -200,9 +200,10 @@
     <section class="max-w-6xl mx-auto px-6 pt-16 pb-12 text-center">
       
       <!-- Tag Pill -->
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-mono font-medium mb-8 shadow-inner shadow-cyan-500/10">
-        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-        <span>Red Team Probing ➔ Blue Team Patching ➔ Cloudflare Edge Shield</span>
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-mono font-medium mb-6 shadow-inner shadow-cyan-500/10">
+        <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-cyan-500 text-obsidian-950 uppercase tracking-wider">NEW 2.0</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span>Offensive AI Pentesting & Line-Rate Edge Patching</span>
       </div>
       
       <!-- Hero Headline -->
@@ -213,9 +214,28 @@
         </span>
       </h1>
       
-      <p class="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
+      <p class="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto mb-8 leading-relaxed font-normal">
         Don't settle for static PDF reports. EndpointGuard uses a <strong>4-Agent Closed-Loop Engine</strong> to simulate BOLA/IDOR attacks, synthesize precision AST code patches, certify regression invariants, and deploy instant virtual patches to the <strong>Cloudflare Edge</strong>.
       </p>
+
+      <!-- Akto & Escape Style Interactive Quick Jump Bar -->
+      <div class="flex flex-wrap items-center justify-center gap-3 mb-10 text-xs font-mono">
+        <a href="#radar" class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-obsidian-900/90 border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 hover:text-white transition shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/25">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+          <span class="font-bold">Live Attack Radar Simulation</span>
+          <span class="text-slate-500 group-hover:translate-x-0.5 transition">↓</span>
+        </a>
+        <a href="#how-it-works" class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-obsidian-900/90 border border-obsidian-800 hover:border-emerald-500/40 text-slate-300 hover:text-emerald-300 transition">
+          <span>⚡</span>
+          <span>Bento Pipeline Architecture</span>
+          <span class="text-slate-500 group-hover:translate-x-0.5 transition">↓</span>
+        </a>
+        <a href="#consensus" class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-obsidian-900/90 border border-obsidian-800 hover:border-violet-500/40 text-slate-300 hover:text-violet-300 transition">
+          <span>🏛️</span>
+          <span>Tri-Brain AI Council (BFT)</span>
+          <span class="text-slate-500 group-hover:translate-x-0.5 transition">↓</span>
+        </a>
+      </div>
 
       <!-- Enterprise Multi-Mode Scanner Box (OpenAPI, Postman & Single URL) -->
       <div class="max-w-3xl mx-auto bg-obsidian-900/90 border border-obsidian-700/80 p-3.5 rounded-2xl shadow-2xl backdrop-blur-xl glow-cyan">
@@ -418,7 +438,7 @@
     </section>
 
     <!-- SECTION: Live Traffic & Attack Interception Radar (Akto & Escape Style) -->
-    <section id="radar" class="max-w-6xl mx-auto px-6 py-12">
+    <section id="radar" class="max-w-6xl mx-auto px-6 py-12 scroll-mt-24">
       <div class="bg-gradient-to-b from-obsidian-900/90 to-obsidian-950/95 border border-cyan-500/40 rounded-3xl p-6 sm:p-10 backdrop-blur-2xl relative overflow-hidden shadow-2xl glow-cyan">
         
         <!-- Ambient Radial Glow -->
@@ -867,7 +887,7 @@
     </section>
 
     <!-- SECTION: Tri-Brain AI Security Council (Byzantine Fault-Tolerant Consensus) -->
-    <section id="consensus" class="max-w-6xl mx-auto px-6 py-16 border-t border-obsidian-800/80">
+    <section id="consensus" class="max-w-6xl mx-auto px-6 py-16 border-t border-obsidian-800/80 scroll-mt-24">
       <div class="bg-gradient-to-b from-obsidian-900/90 to-obsidian-950/90 border border-obsidian-700/80 rounded-3xl p-6 sm:p-10 backdrop-blur-2xl relative overflow-hidden shadow-2xl glow-cyan">
         
         <!-- Background Ambient Accents -->
@@ -1056,7 +1076,7 @@
     </section>
 
     <!-- SECTION: Enterprise Bento Grid Architecture (Akto & Escape Style) -->
-    <section id="how-it-works" class="max-w-6xl mx-auto px-6 py-20 border-t border-obsidian-800/80">
+    <section id="how-it-works" class="max-w-6xl mx-auto px-6 py-20 border-t border-obsidian-800/80 scroll-mt-24">
       <div class="text-center mb-16">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cyan-950/70 text-cyan-300 text-xs font-mono font-bold mb-3 border border-cyan-500/30">
           <span>⚡</span> OFFENSIVE APPLIED INTELLIGENCE
@@ -2699,6 +2719,18 @@ export default {
         if (ind) ind.classList.add('hidden');
       }
     }
+
+    // Smooth Hash Scroller on Page Load & Anchor Navigation
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.location.hash) {
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+          setTimeout(() => {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 250);
+        }
+      }
+    });
   </script>
 
   <!-- FLOATING CYBER CS CHATBOT WIDGET -->
